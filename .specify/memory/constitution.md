@@ -38,12 +38,31 @@ Core web app for ticket intake, triage, assignment, updates, and resolution. Inc
 - POST /api/tickets/{id}/comments — add comment
 - POST /api/auth/login — authenticate user
 
-### UI (minimum screens)
-- Login screen
-- New ticket form
-- Ticket list with filters
-- Ticket detail with comment box and actions (assign, change status)
-- Admin user management (basic)
+### UI & Design
+The product should feel modern, polished, and distinctive while remaining usable and accessible. Aim for a clean visual hierarchy, responsive layout, and a simple design system (colors, typography, spacing, components) that can be themed.
+
+Minimum pages and behavior:
+- Landing / Summary page: high-level counts (open, in-progress, overdue), quick actions (create ticket, search), recent activity feed, and shortcuts to reports and dashboard.
+- Details page: full ticket view with metadata, threaded comments, attachments preview, timeline of status/assignment changes, and quick actions (assign, change status, add note).
+- Reports page: selectable reports (tickets by status, SLA breaches, agent workload) with date range, basic charts (bar/line/pie) and CSV export.
+- Dashboard page: configurable widgets showing KPIs (avg time-to-resolution, open-by-priority, tickets-by-agent, SLA compliance), trends, and links into reports and filters.
+
+Design requirements:
+- Responsive: usable on desktop and tablet; mobile-first considerations for core flows.
+- Accessibility: basic keyboard navigation and screen-reader labels; contrast and semantic HTML.
+- Visual identity: one accent color, clear CTA styles, and modest animations for state changes.
+- Component-driven: buttons, inputs, cards, lists, modals, and charts should be reusable.
+
+Page acceptance criteria (MVP):
+- Landing: displays numeric summaries and recent activity; create-ticket opens the form.
+- Details: shows ticket fields, comment history, attachments, and allows status/assignment changes that persist via the API.
+- Reports: user can select a date range and download a CSV for at least one report type.
+- Dashboard: at least three KPIs display and update with current data; widgets link to filtered ticket lists.
+
+Developer notes:
+- Store UI state minimally on server; prefer server-side filters and pagination for lists.
+- Provide mock data and Storybook-like examples for core components to speed design/development.
+
 
 ### Non-functional Requirements
 - Availability: single-region, 99% uptime for MVP.
