@@ -1,50 +1,73 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+## Helpdesk Web App Constitution
 
-## Core Principles
+### Purpose
+Provide the minimal, clear requirements for an IT helpdesk web application MVP used to receive, track, and resolve user IT issues.
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### Scope
+Core web app for ticket intake, triage, assignment, updates, and resolution. Includes a simple REST API, a basic web UI, authentication, and audit logging. Excludes integrations with enterprise asset management or advanced analytics (optional later).
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### Core Principles
+- Simplicity: Start with smallest useful workflow that solves ticket lifecycle.
+- Secure by default: Enforce authentication and least-privilege access.
+- Observable: Audit actions and expose basic metrics and logs.
+- Testable: Critical flows have automated tests (create, update, assign, close).
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Users & Roles
+- End User: Creates and views own tickets.
+- Agent: Views, comments, updates, assigns tickets.
+- Admin: Manages users, roles, and system settings.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### MVP Functional Requirements (bare minimum)
+- Ticket creation: title, description, reporter, priority, optional attachments.
+- Ticket listing & filtering: by status, priority, assignee, reporter.
+- Ticket detail: comments, status changes, assignment, timestamps.
+- Assignment: agents can claim or be assigned tickets.
+- Notifications: email or in-app notification on assignment and status change (basic).
+- Authentication: login (local or single-sign-on) and protected endpoints.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Minimal Data Model
+- Ticket: id, title, description, reporter_id, assignee_id, status (open, in_progress, resolved, closed), priority, created_at, updated_at.
+- User: id, name, email, role, password_hash (or external id for SSO), created_at.
+- Comment: id, ticket_id, author_id, body, created_at.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### Public API (minimal surface)
+- POST /api/tickets — create ticket (returns JSON ticket)
+- GET /api/tickets — list tickets (supports query filters)
+- GET /api/tickets/{id} — ticket detail
+- PATCH /api/tickets/{id} — update ticket (status, assignee, fields)
+- POST /api/tickets/{id}/comments — add comment
+- POST /api/auth/login — authenticate user
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### UI (minimum screens)
+- Login screen
+- New ticket form
+- Ticket list with filters
+- Ticket detail with comment box and actions (assign, change status)
+- Admin user management (basic)
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Non-functional Requirements
+- Availability: single-region, 99% uptime for MVP.
+- Performance: list and get endpoints respond < 1s under light load.
+- Data retention: tickets and comments retained per policy; soft delete support.
+- Security: HTTPS required, passwords hashed, role-based access control, input validation.
+- Logging & Auditing: record create/update/delete actions with user and timestamp.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Security & Privacy
+- Only authenticated users may create or view tickets; users can view only their own tickets unless agent/admin.
+- Encrypt data in transit; sensitive fields encrypted at rest where practical.
+- Minimal PII stored: name, email; avoid unnecessary personal data.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+### Acceptance Criteria (MVP)
+- A user can create a ticket and receive an identifier.
+- An agent can view, comment, change status, and assign a ticket.
+- API authenticates and rejects unauthenticated requests.
+- Basic UI pages render and allow the listed flows.
+- Automated tests cover the create → update → close happy path.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### Integrations (optional, out of scope for MVP)
+- External email gateway, SSO providers, asset database.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### Governance
+Constitution changes require a short rationale, a migration plan if schema changes, and one approver from product and one from engineering. Track version and ratification date below.
+
+**Version**: 0.1 | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
